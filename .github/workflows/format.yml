@@ -37,4 +37,11 @@ jobs:
               run: pnpm run format
 
             - name: Commit changed files
-              shell: ba
+              shell: bash
+              run: |
+                  if [[ `git status --porcelain` ]]; then
+                      git config --global user.name "frachtbot"
+                      git config --global user.email "frachtbot@users.noreply.github.com"
+                      git commit -am "[skip ci] Formatted sources"
+                      git push
+                  fi
