@@ -1,0 +1,10 @@
+.input {
+    background-color: var(--ifm-code-background);
+    border-radius: var(--ifm-alert-border-radius);
+    border: none;
+    outline: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 7px;
+    
