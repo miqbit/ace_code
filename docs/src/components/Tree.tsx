@@ -41,4 +41,31 @@ export const TreeItem = ({ valueKey, selectedPath, value, isArrayItem }: TreeIte
 			</span>
 			{isObject && (
 				<ul className={clsx(classes['tree__list'])} role="group">
-					{Object.entries(value as object).
+					{Object.entries(value as object).map(([innerKey, innerValue]) => (
+						<TreeItem
+							selectedPath={selectedPath?.[0] === valueKey ? selectedPath?.slice(1) : undefined}
+							key={innerKey}
+							valueKey={innerKey}
+							value={innerValue}
+							isArrayItem={Array.isArray(value)}
+						/>
+					))}
+				</ul>
+			)}
+			{isObject && closingBracket(value) + ','}
+		</li>
+	);
+};
+
+export type TreeProps = {
+	object: object;
+	selectedPath: string[];
+};
+
+export const Tree = ({ object, selectedPath }: TreeProps) => (
+	<ul className={classes['tree']} role="tree">
+		{Object.entries(object).map(([key, value]) => (
+			<TreeItem selectedPath={selectedPath} key={key} valueKey={key} value={value} />
+		))}
+	</ul>
+);
