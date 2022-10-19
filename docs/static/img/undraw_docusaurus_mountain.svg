@@ -118,4 +118,18 @@
         <g id="Group_6" data-name="Group 6" transform="translate(1.531 16.584)">
           <path id="Path_54" data-name="Path 54" d="M1.093,0h7.3A1.093,1.093,0,0,1,9.485,1.093v3.15A1.093,1.093,0,0,1,8.392,5.336h-7.3A1.093,1.093,0,0,1,0,4.243V1.094A1.093,1.093,0,0,1,1.093,0Z" transform="translate(0 0)" fill="#4a4a4a" fill-rule="evenodd"/>
           <g id="Group_5" data-name="Group 5" transform="translate(10.671 0)">
-            <rect id="Rectangle_52" data-name="Rectangle 52" width="
+            <rect id="Rectangle_52" data-name="Rectangle 52" width="5.336" height="5.336" rx="1" fill="#4a4a4a"/>
+            <rect id="Rectangle_53" data-name="Rectangle 53" width="5.336" height="5.336" rx="1" transform="translate(6.324 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_54" data-name="Rectangle 54" width="5.336" height="5.336" rx="1" transform="translate(12.647 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_55" data-name="Rectangle 55" width="5.336" height="5.336" rx="1" transform="translate(18.971 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_56" data-name="Rectangle 56" width="5.336" height="5.336" rx="1" transform="translate(25.295 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_57" data-name="Rectangle 57" width="5.336" height="5.336" rx="1" transform="translate(31.619 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_58" data-name="Rectangle 58" width="5.336" height="5.336" rx="1" transform="translate(37.942 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_59" data-name="Rectangle 59" width="5.336" height="5.336" rx="1" transform="translate(44.265 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_60" data-name="Rectangle 60" width="5.336" height="5.336" rx="1" transform="translate(50.589 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_61" data-name="Rectangle 61" width="5.336" height="5.336" rx="1" transform="translate(56.912 0)" fill="#4a4a4a"/>
+            <rect id="Rectangle_62" data-name="Rectangle 62" width="5.336" height="5.336" rx="1" transform="translate(63.236 0)" fill="#4a4a4a"/>
+          </g>
+          <path id="Path_55" data-name="Path 55" d="M1.094,0H8A1.093,1.093,0,0,1,9.091,1.093v3.15A1.093,1.093,0,0,1,8,5.336H1.093A1.093,1.093,0,0,1,0,4.243V1.094A1.093,1.093,0,0,1,1.093,0Z" transform="translate(80.428 0)" fill="#4a4a4a" fill-rule="evenodd"/>
+        </g>
+        <g id="Group_7" data-name="Group 7" transform="translate(1.531 29.627)
