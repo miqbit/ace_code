@@ -132,4 +132,16 @@
           </g>
           <path id="Path_55" data-name="Path 55" d="M1.094,0H8A1.093,1.093,0,0,1,9.091,1.093v3.15A1.093,1.093,0,0,1,8,5.336H1.093A1.093,1.093,0,0,1,0,4.243V1.094A1.093,1.093,0,0,1,1.093,0Z" transform="translate(80.428 0)" fill="#4a4a4a" fill-rule="evenodd"/>
         </g>
-        <g id="Group_7" data-name="Group 7" transform="translate(1.531 29.627)
+        <g id="Group_7" data-name="Group 7" transform="translate(1.531 29.627)">
+          <rect id="Rectangle_63" data-name="Rectangle 63" width="5.336" height="5.336" rx="1" transform="translate(0 0)" fill="#4a4a4a"/>
+          <rect id="Rectangle_64" data-name="Rectangle 64" width="5.336" height="5.336" rx="1" transform="translate(6.324 0)" fill="#4a4a4a"/>
+          <rect id="Rectangle_65" data-name="Rectangle 65" width="5.336" height="5.336" rx="1" transform="translate(12.647 0)" fill="#4a4a4a"/>
+          <rect id="Rectangle_66" data-name="Rectangle 66" width="5.336" height="5.336" rx="1" transform="translate(18.971 0)" fill="#4a4a4a"/>
+          <path id="Path_56" data-name="Path 56" d="M1.093,0H31.515a1.093,1.093,0,0,1,1.093,1.093V4.244a1.093,1.093,0,0,1-1.093,1.093H1.093A1.093,1.093,0,0,1,0,4.244V1.093A1.093,1.093,0,0,1,1.093,0ZM34.687,0h3.942a1.093,1.093,0,0,1,1.093,1.093V4.244a1.093,1.093,0,0,1-1.093,1.093H34.687a1.093,1.093,0,0,1-1.093-1.093V1.093A1.093,1.093,0,0,1,34.687,0Z" transform="translate(25.294 0)" fill="#4a4a4a" fill-rule="evenodd"/>
+          <rect id="Rectangle_67" data-name="Rectangle 67" width="5.336" height="5.336" rx="1" transform="translate(66.003 0)" fill="#4a4a4a"/>
+          <rect id="Rectangle_68" data-name="Rectangle 68" width="5.336" height="5.336" rx="1" transform="translate(72.327 0)" fill="#4a4a4a"/>
+          <rect id="Rectangle_69" data-name="Rectangle 69" width="5.336" height="5.336" rx="1" transform="translate(84.183 0)" fill="#4a4a4a"/>
+          <path id="Path_57" data-name="Path 57" d="M5.336,0V1.18A1.093,1.093,0,0,1,4.243,2.273H1.093A1.093,1.093,0,0,1,0,1.18V0Z" transform="translate(83.59 2.273) rotate(180)" fill="#4a4a4a"/>
+          <path id="Path_58" data-name="Path 58" d="M5.336,0V1.18A1.093,1.093,0,0,1,4.243,2.273H1.093A1.093,1.093,0,0,1,0,1.18V0Z" transform="translate(78.255 3.063)" fill="#4a4a4a"/>
+        </g>
+        <rect id="Rectangle_70" data-name="Rectangle 70" width="88.927" height="2.371" rx="1.085" 
