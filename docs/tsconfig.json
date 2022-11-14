@@ -8,4 +8,5 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["./src
+	"include": ["./src/**/*", "./docs/**/*", "index.d.ts"]
+}
