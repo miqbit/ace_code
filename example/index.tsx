@@ -15,4 +15,18 @@ const App = () => {
 					<Link to="/StockExample">Stock example</Link>
 				</li>
 				<li>
-					<Link to="/ProxyEx
+					<Link to="/ProxyExample">Proxy example</Link>
+				</li>
+			</menu>
+
+			<Route path="/StockExample">
+				<StockExample />
+			</Route>
+			<Route path="/ProxyExample">
+				<ProxyExample />
+			</Route>
+		</BrowserRouter>
+	);
+};
+
+ReactDOM.render(<App />, document.getElementById('root'));
