@@ -119,4 +119,11 @@ export const useObservers = <T>(): ObserversControl<T> => {
 	);
 
 	return {
-		wa
+		watch,
+		watchAll,
+		watchBatchUpdates,
+		isObserved,
+		notifySubTree,
+		notifyAll,
+	};
+};
