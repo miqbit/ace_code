@@ -52,4 +52,71 @@ export const useObservers = <T>(): ObserversControl<T> => {
 		return observersMap.current.get(path).add(observer as Observer<unknown>);
 	}, []);
 
-	const stop
+	const stopObserving = useCallback(<V>(path: Pxth<V>, observerKey: ObserverKey) => {
+		const currentObservers = observersMap.current.get(path);
+
+		invariant(currentObservers, 'Cannot remove observer from value, which is not observing');
+
+		currentObservers.remove(observerKey);
+
+		if (currentObservers.isEmpty()) {
+			observersMap.current.remove(path);
+		}
+	}, []);
+
+	const watch = useCallback(
+		<V>(path: Pxth<V>, observer: Observer<V>) => {
+			const key = observe(path, observer);
+			return () => stopObserving(path, key);
+		},
+		[observe, stopObserving],
+	);
+
+	const watchAll = useCallback((observer: Observer<T>) => watch(createPxth<T>([]), observer), [watch]);
+
+	const watchBatchUpdates = useCallback(
+		(observer: Observer<BatchUpdate<T>>) => {
+			const key = observeBatchUpdates(observer);
+
+			return () => stopObservingBatchUpdates(key);
+		},
+		[observeBatchUpdates, stopObservingBatchUpdates],
+	);
+
+	const isObserved = useCallback(<V>(path: Pxth<V>) => observersMap.current.has(path), []);
+
+	const notifyPaths = useCallback(
+		(origin: Pxth<unknown>, paths: Pxth<unknown>[], values: T) => {
+			batchUpdate({ paths, origin, values });
+			paths.forEach((path) => {
+				const observer = observersMap.current.get(path);
+				const subValue = deepGet(values, path);
+				observer.call(subValue);
+			});
+		},
+		[batchUpdate],
+	);
+
+	const notifySubTree = useCallback(
+		<V>(path: Pxth<V>, values: T) => {
+			const subPaths = observersMap.current
+				.keys()
+				.filter(
+					(tempPath) =>
+						isInnerPxth(path as Pxth<unknown>, tempPath) ||
+						samePxth(path as Pxth<unknown>, tempPath) ||
+						isInnerPxth(tempPath, path as Pxth<unknown>),
+				);
+
+			notifyPaths(path as Pxth<unknown>, subPaths, values);
+		},
+		[notifyPaths],
+	);
+
+	const notifyAll = useCallback(
+		(values: T) => notifyPaths(createPxth([]), observersMap.current.keys(), values),
+		[notifyPaths],
+	);
+
+	return {
+		wa
