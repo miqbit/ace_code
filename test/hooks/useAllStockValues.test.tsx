@@ -79,4 +79,10 @@ describe('Testing "useStockValues" with context stock', () => {
 
 		expect(result.current).toStrictEqual({
 			hello: 'test',
-			par
+			parent: {
+				child: 'value',
+			},
+			array: [1, 42],
+		});
+	});
+});
