@@ -116,3 +116,177 @@ describe('Observer tests', () => {
 				parent: {
 					child: {
 						value: 'newValue',
+					},
+					notInBranch: {
+						value: 'asdf',
+					},
+				},
+			});
+		});
+
+		expect(observer).not.toBeCalled();
+	});
+
+	it('should receive correct value', () => {
+		const { result } = renderUseObserversHook();
+
+		const value = 'hello';
+
+		const parentObserver = jest.fn();
+		const childObserver = jest.fn();
+
+		act(() => {
+			result.current.watch(createPxth(['parent']), parentObserver);
+			result.current.watch(createPxth(['parent', 'child']), childObserver);
+			result.current.notifySubTree(createPxth(['parent', 'child']), {
+				parent: {
+					child: value,
+				},
+			});
+		});
+
+		expect(childObserver).toBeCalledWith(value);
+		expect(parentObserver).toBeCalledWith({ child: value });
+	});
+});
+
+describe('Is observed test', () => {
+	it('should be observed', () => {
+		const { result } = renderUseObserversHook();
+
+		act(() => {
+			result.current.watch(createPxth(['value']), jest.fn());
+		});
+
+		expect(result.current.isObserved(createPxth(['value']))).toBeTruthy();
+		expect(result.current.isObserved(createPxth(['asdf']))).toBeFalsy();
+	});
+	it('should be observed denormalized path', () => {
+		const { result } = renderUseObserversHook();
+
+		act(() => {
+			result.current.watch(createPxth(['arr', '0']), jest.fn());
+		});
+
+		expect(result.current.isObserved(createPxth(['arr', '0']))).toBeTruthy();
+		expect(result.current.isObserved(createPxth(['arr', '3']))).toBeFalsy();
+	});
+});
+
+describe('Removing observers test', () => {
+	it('should remove observer', () => {
+		const { result } = renderUseObserversHook();
+
+		const observer = jest.fn();
+
+		act(() => {
+			const cleanup = result.current.watch(createPxth(['value']), observer);
+
+			result.current.notifySubTree(createPxth(['value']), { value: '2' });
+
+			cleanup();
+
+			result.current.notifySubTree(createPxth(['value']), { value: '3' });
+		});
+
+		expect(observer).toBeCalledTimes(1);
+	});
+
+	it('should remove denormalized path observer', () => {
+		const { result } = renderUseObserversHook();
+
+		const observer = jest.fn();
+
+		act(() => {
+			const cleanup = result.current.watch(createPxth(['arr', '0']), observer);
+
+			result.current.notifySubTree(createPxth(['arr', '0']), { arr: [0] });
+			result.current.notifySubTree(createPxth(['arr', '0']), { arr: [1] });
+
+			cleanup();
+
+			result.current.notifySubTree(createPxth(['arr', '0']), { arr: [2] });
+			result.current.notifySubTree(createPxth(['arr', '0']), { arr: [3] });
+		});
+
+		expect(observer).toBeCalledTimes(2);
+	});
+});
+
+describe('Batch observers tests', () => {
+	it('should call observer', () => {
+		const { result } = renderUseObserversHook();
+
+		const observer = jest.fn();
+
+		act(() => {
+			result.current.watchBatchUpdates(observer);
+
+			result.current.notifySubTree(createPxth(['value']), {
+				value: '2',
+			});
+		});
+
+		expect(observer).toBeCalled();
+	});
+
+	it('should call observer on any update with arguments', () => {
+		const { result } = renderUseObserversHook();
+
+		const observer = jest.fn();
+
+		act(() => {
+			result.current.watchBatchUpdates(observer);
+			result.current.watch(createPxth(['parent', 'child']), jest.fn());
+			result.current.watch(createPxth(['parent']), jest.fn());
+			result.current.watch(createPxth(['value']), jest.fn());
+
+			result.current.notifySubTree(createPxth(['parent', 'child', 'hello']), {
+				value: 'asdf',
+				parent: {
+					child: {
+						hello: '2',
+					},
+				},
+			});
+		});
+
+		expect(observer).toBeCalled();
+		expect(getPxthSegments(observer.mock.calls[0][0].origin)).toStrictEqual(['parent', 'child', 'hello']);
+		expect(observer.mock.calls[0][0].paths.map(getPxthSegments)).toStrictEqual([['parent', 'child'], ['parent']]);
+		expect(observer).toBeCalledWith({
+			origin: expect.anything(),
+			paths: expect.anything(),
+			values: {
+				value: 'asdf',
+				parent: {
+					child: {
+						hello: '2',
+					},
+				},
+			},
+		});
+	});
+
+	it('should remove observer', () => {
+		const { result } = renderUseObserversHook();
+
+		const observer = jest.fn();
+
+		act(() => {
+			const cleanup = result.current.watchBatchUpdates(observer);
+
+			result.current.notifySubTree(createPxth(['value']), {
+				value: '2',
+			});
+
+			cleanup();
+
+			result.current.notifySubTree(createPxth(['value']), {
+				value: 'h',
+			});
+		});
+
+		expect(observer).toBeCalledTimes(1);
+	});
+});
