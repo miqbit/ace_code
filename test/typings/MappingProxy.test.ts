@@ -73,4 +73,64 @@ describe('Mapping proxy', () => {
 		);
 
 		const defaultObserve = jest.fn();
-		const o
+		const observer = jest.fn();
+
+		defaultObserve.mockReturnValue(0);
+
+		proxy.watch(createPxth(['hello']), observer, defaultObserve);
+		expect(getPxthSegments(defaultObserve.mock.calls[0][0])).toStrictEqual(['a', 'd', 'c']);
+
+		defaultObserve.mockClear();
+
+		proxy.watch(createPxth(['bye']), observer, defaultObserve);
+		expect(getPxthSegments(defaultObserve.mock.calls[0][0])).toStrictEqual(['b', 'b', 'd']);
+	});
+
+	it('calling observer fns', () => {
+		const fullUser = {
+			personalData: {
+				name: {
+					firstName: 'Hello',
+					lastName: 'World',
+				},
+				birthday: new Date('2020.12.26'),
+			},
+			registrationDate: new Date('2020.12.31'),
+			notify: true,
+		};
+		const rawData = {
+			registeredUser: {
+				name: fullUser.personalData.name.firstName,
+				surname: fullUser.personalData.name.lastName,
+				dates: {
+					registration: fullUser.registrationDate,
+				},
+			},
+			dateOfBirth: fullUser.personalData.birthday,
+		};
+
+		const proxy = new MappingProxy<RegisteredUser>(getUserMapSource(), createPxth(['registeredUser']));
+
+		const observers: Observer<unknown>[] = [];
+
+		const defaultObserve = jest.fn((_, observer) => {
+			observers.push(observer);
+			return () => observers.splice(observers.indexOf(observer), 1);
+		});
+		const observer = jest.fn();
+
+		proxy.watch(createPxth(['registeredUser', 'personalData', 'name', 'firstName']), observer, defaultObserve);
+
+		expect(getPxthSegments(defaultObserve.mock.calls[0][0])).toStrictEqual(['registeredUser', 'name']);
+
+		defaultObserve.mockClear();
+
+		proxy.watch(createPxth(['registeredUser', 'personalData', 'name']), observer, defaultObserve);
+		expect(getPxthSegments(defaultObserve.mock.calls[0][0])).toStrictEqual(['registeredUser']);
+
+		defaultObserve.mockClear();
+
+		proxy.watch(createPxth(['registeredUser', 'personalData']), observer, defaultObserve);
+		expect(getPxthSegments(defaultObserve.mock.calls[0][0])).toStrictEqual([]);
+
+		observers[0](rawData.regi
