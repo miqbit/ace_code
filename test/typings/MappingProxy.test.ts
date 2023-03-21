@@ -133,4 +133,85 @@ describe('Mapping proxy', () => {
 		proxy.watch(createPxth(['registeredUser', 'personalData']), observer, defaultObserve);
 		expect(getPxthSegments(defaultObserve.mock.calls[0][0])).toStrictEqual([]);
 
-		observers[0](rawData.regi
+		observers[0](rawData.registeredUser.name);
+
+		expect(observer).toBeCalledWith(fullUser.personalData.name.firstName);
+
+		observer.mockClear();
+
+		observers[1](rawData.registeredUser);
+		expect(observer).toBeCalledWith(fullUser.personalData.name);
+
+		observer.mockClear();
+
+		observers[2](rawData);
+		expect(observer).toBeCalledWith(fullUser.personalData);
+	});
+
+	it('calling observer fns (complex cases)', () => {
+		const fullData = {
+			truck: {
+				driver: {
+					name: 'Hello',
+					surname: 'Bye',
+					phone: '+333533333',
+				},
+				info: {
+					trailerNo: 'AAA111',
+					truckNo: 'AAA222',
+				},
+				owner: {
+					companyId: 0,
+					companyName: 'Hello World',
+					contacts: [
+						{
+							contactId: 0,
+							name: 'Bill Bill',
+							contactInfo: {
+								email: 'bill.bill@mail.loc',
+								phone: '+333 333 333',
+							},
+						},
+					],
+				},
+			},
+		};
+		const rawData = {
+			truck: {
+				plate_no: fullData.truck.info.truckNo,
+			},
+			trailer: {
+				plate_no: fullData.truck.info.trailerNo,
+			},
+			company: fullData.truck.owner.companyName,
+			contact_name: fullData.truck.owner.contacts[0].name,
+			contact_id: fullData.truck.owner.contacts[0].contactId,
+			contact_email: fullData.truck.owner.contacts[0].contactInfo.email,
+			contact_phone: fullData.truck.owner.contacts[0].contactInfo.phone,
+		};
+
+		const proxy = new MappingProxy<{
+			info: {
+				truckNo: string;
+				trailerNo: string;
+			};
+			owner: {
+				name: string;
+				contactId: number;
+				contactInfo: {
+					email: string;
+					phone: string;
+				};
+			};
+		}>(
+			{
+				info: {
+					truckNo: createPxth(['truck', 'plate_no']),
+					trailerNo: createPxth(['trailer', 'plate_no']),
+				},
+				owner: {
+					name: createPxth(['contact_name']),
+					contactId: createPxth(['contact_id']),
+					contactInfo: {
+						email: createPxth(['contact_email']),
+						phone: createPxth(['con
