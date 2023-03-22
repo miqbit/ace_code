@@ -214,4 +214,69 @@ describe('Mapping proxy', () => {
 					contactId: createPxth(['contact_id']),
 					contactInfo: {
 						email: createPxth(['contact_email']),
-						phone: createPxth(['con
+						phone: createPxth(['contact_phone']),
+					},
+				},
+			},
+			createPxth(['truck']),
+		);
+
+		const observers: Observer<unknown>[] = [];
+
+		const defaultWatch = jest.fn((_, observer) => {
+			observers.push(observer);
+			return () => observers.splice(observers.indexOf(observer), 1);
+		});
+		const observer = jest.fn();
+
+		proxy.watch(createPxth(['truck', 'owner']), observer, defaultWatch);
+		expect(getPxthSegments(defaultWatch.mock.calls[0][0])).toStrictEqual([]);
+
+		defaultWatch.mockClear();
+
+		proxy.watch(createPxth(['truck', 'info']), observer, defaultWatch);
+		expect(getPxthSegments(defaultWatch.mock.calls[0][0])).toStrictEqual([]);
+
+		observers[0](rawData);
+		expect(observer).toBeCalledWith(fullData.truck.owner.contacts[0]);
+
+		observer.mockClear();
+
+		observers[1](rawData);
+		expect(observer).toBeCalledWith(fullData.truck.info);
+	});
+
+	it('should set proxied value', () => {
+		const proxy = new MappingProxy<RegisteredUser>(getUserMapSource(), createPxth(['registeredUser']));
+
+		const defaultSetValue = jest.fn();
+
+		proxy.setValue(createPxth(['registeredUser', 'personalData', 'name', 'firstName']), 'Hello', defaultSetValue);
+
+		expect(getPxthSegments(defaultSetValue.mock.calls[0][0])).toStrictEqual(['registeredUser', 'name']);
+		expect(defaultSetValue).toBeCalledWith(expect.anything(), 'Hello');
+
+		defaultSetValue.mockClear();
+
+		proxy.setValue(
+			createPxth(['registeredUser', 'personalData', 'name']),
+			{ firstName: 'As', lastName: 'Df' },
+			defaultSetValue,
+		);
+
+		expect(
+			defaultSetValue.mock.calls.findIndex(
+				([path, value]) => samePxth(path, createPxth(['registeredUser', 'name'])) && value === 'As',
+			) !== -1,
+		).toBeTruthy();
+
+		expect(
+			defaultSetValue.mock.calls.findIndex(
+				([path, value]) => samePxth(path, createPxth(['registeredUser', 'surname'])) && value === 'Df',
+			) !== -1,
+		).toBeTruthy();
+	});
+
+	it('should get proxied value', () => {
+		const fullUser = {
+			p
