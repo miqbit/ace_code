@@ -411,4 +411,87 @@ describe('Mapping proxy', () => {
 					location_from: {
 						id: 24,
 						info: {
-				
+							street: 'Gedimino g.',
+							city: 'Vilnius',
+						},
+					},
+				},
+			},
+		};
+
+		const defaultSetValue: <U>(path: Pxth<U>, value: U) => void = jest.fn(<U>(path: Pxth<U>, value: U) => {
+			deepSet(values, path, value);
+		});
+
+		proxy.setValue(createPxth(['compound', 'location', 'id']), 42, defaultSetValue);
+		expect(values).toStrictEqual({
+			core: {
+				cmp_id_from: 5,
+				values: {
+					location_from: {
+						id: 42,
+						info: {
+							street: 'Gedimino g.',
+							city: 'Vilnius',
+						},
+					},
+				},
+			},
+		});
+
+		proxy.setValue(
+			createPxth(['compound', 'location', 'info']),
+			{
+				city: 'Kaunas',
+				street: 'Teodoro',
+			},
+			defaultSetValue,
+		);
+		expect(values).toStrictEqual({
+			core: {
+				cmp_id_from: 5,
+				values: {
+					location_from: {
+						id: 42,
+						info: {
+							city: 'Kaunas',
+							street: 'Teodoro',
+						},
+					},
+				},
+			},
+		});
+	});
+
+	it('should watch value from nested path', () => {
+		const proxy = new MappingProxy(
+			{
+				location: createPxth(['core', 'values', 'location_from']),
+				cmpId: createPxth(['core', 'cmp_id_from']),
+			},
+			createPxth(['compound']),
+		);
+
+		const observer = jest.fn();
+		const defaultWatch = jest.fn((_path, proxiedObserver: (value: unknown) => void) => {
+			proxiedObserver(42);
+			return jest.fn();
+		});
+
+		proxy.watch(
+			createPxth(['compound', 'location', 'id']),
+			observer,
+			defaultWatch as <U>(path: Pxth<U>, observer: Observer<U>) => () => void,
+		);
+
+		expect(getPxthSegments(defaultWatch.mock.calls[0][0])).toStrictEqual(['core', 'values', 'location_from', 'id']);
+		expect(defaultWatch.mock.calls[0][1]).toBeDefined();
+		expect(observer).toBeCalledWith(42);
+	});
+
+	it('should handle arrays', () => {
+		const proxy = new MappingProxy(
+			{
+				values: [
+					{
+						hello: createPx
