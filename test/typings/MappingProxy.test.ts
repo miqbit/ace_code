@@ -336,4 +336,79 @@ describe('Mapping proxy', () => {
 		expect(getPxthSegments(proxy.getNormalPath(createPxth(['registeredUser', 'location', 'city'])))).toStrictEqual([
 			'registeredUser',
 			'personalData',
-	
+			'home_location',
+			'city',
+		]);
+	});
+
+	it('should return proxied path from normal path', () => {
+		const proxy = new MappingProxy<RegisteredUser>(
+			{
+				registrationDate: createPxth<Date>(['registeredUser', 'dates', 'registration']),
+				personalData: {
+					name: {
+						firstName: createPxth(['registeredUser', 'name']),
+						lastName: createPxth(['registeredUser', 'surname']),
+					},
+					birthday: createPxth<Date>(['dateOfBirth']),
+				},
+			},
+			createPxth(['registeredUser']),
+		);
+
+		expect(
+			getPxthSegments(proxy.getProxiedPath(createPxth(['registeredUser', 'dates', 'registration']))),
+		).toStrictEqual(['registeredUser', 'registrationDate']);
+		expect(getPxthSegments(proxy.getProxiedPath(createPxth(['registeredUser', 'name'])))).toStrictEqual([
+			'registeredUser',
+			'personalData',
+			'name',
+			'firstName',
+		]);
+		expect(() => proxy.getProxiedPath(createPxth(['registeredUser', 'personalData']))).toThrow();
+	});
+
+	it('should getValue from nested path', () => {
+		const proxy = new MappingProxy(
+			{
+				location: createPxth(['core', 'values', 'location_from']),
+				cmpId: createPxth(['core', 'cmp_id_from']),
+			},
+			createPxth(['compound']),
+		);
+
+		const values = {
+			core: {
+				cmp_id_from: 5,
+				values: {
+					location_from: {
+						id: 24,
+					},
+				},
+			},
+		};
+
+		const fn = jest.fn((path) => {
+			return deepGet(values, path);
+		});
+		const value = proxy.getValue(createPxth(['compound', 'location', 'id']), fn as <U>(path: Pxth<U>) => U);
+		expect(value).toBe(24);
+	});
+
+	it('should setValue to nested path', () => {
+		const proxy = new MappingProxy(
+			{
+				location: createPxth(['core', 'values', 'location_from']),
+				cmpId: createPxth(['core', 'cmp_id_from']),
+			},
+			createPxth(['compound']),
+		);
+
+		const values = {
+			core: {
+				cmp_id_from: 5,
+				values: {
+					location_from: {
+						id: 24,
+						info: {
+				
