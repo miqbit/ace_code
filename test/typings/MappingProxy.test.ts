@@ -279,4 +279,61 @@ describe('Mapping proxy', () => {
 
 	it('should get proxied value', () => {
 		const fullUser = {
-			p
+			personalData: {
+				name: {
+					firstName: 'Hello',
+					lastName: 'World',
+				},
+				birthday: new Date('2020.12.26'),
+			},
+			registrationDate: new Date('2020.12.31'),
+			notify: true,
+		};
+		const rawData = {
+			registeredUser: {
+				name: fullUser.personalData.name.firstName,
+				surname: fullUser.personalData.name.lastName,
+				dates: {
+					registration: fullUser.registrationDate,
+				},
+			},
+			dateOfBirth: fullUser.personalData.birthday,
+		};
+
+		const proxy = new MappingProxy<RegisteredUser>(getUserMapSource(), createPxth(['registeredUser']));
+
+		const defaultGet = <V>(path: Pxth<V>) => deepGet(rawData, path);
+
+		expect(proxy.getValue(createPxth(['registeredUser', 'personalData', 'name', 'firstName']), defaultGet)).toBe(
+			fullUser.personalData.name.firstName,
+		);
+		expect(proxy.getValue(createPxth(['registeredUser', 'personalData', 'name']), defaultGet)).toStrictEqual(
+			fullUser.personalData.name,
+		);
+		expect(proxy.getValue(createPxth(['registeredUser', 'personalData', 'birthday']), defaultGet)).toStrictEqual(
+			fullUser.personalData.birthday,
+		);
+	});
+
+	it('should return normal path from proxied path', () => {
+		const proxy = new MappingProxy<RegisteredUser & { location: { city: string } }>(
+			{
+				...getUserMapSource(),
+				location: createPxth<{ city: string }>(['registeredUser', 'personalData', 'home_location']),
+			},
+			createPxth(['registeredUser']),
+		);
+
+		expect(getPxthSegments(proxy.getNormalPath(createPxth(['registeredUser', 'personalData'])))).toStrictEqual([]);
+		expect(getPxthSegments(proxy.getNormalPath(createPxth(['registeredUser', 'registrationDate'])))).toStrictEqual([
+			'registeredUser',
+			'dates',
+			'registration',
+		]);
+		expect(
+			getPxthSegments(proxy.getNormalPath(createPxth(['registeredUser', 'personalData', 'name']))),
+		).toStrictEqual(['registeredUser']);
+		expect(getPxthSegments(proxy.getNormalPath(createPxth(['registeredUser', 'location', 'city'])))).toStrictEqual([
+			'registeredUser',
+			'personalData',
+	
