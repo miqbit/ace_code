@@ -494,4 +494,15 @@ describe('Mapping proxy', () => {
 			{
 				values: [
 					{
-						hello: createPx
+						hello: createPxth(['real', 'path']),
+					},
+				],
+			},
+			createPxth(['proxied_path']),
+		);
+
+		expect(
+			getPxthSegments(proxy.getNormalPath(createPxth(['proxied_path', 'values', '0', 'hello']))),
+		).toStrictEqual(['real', 'path']);
+	});
+});
